@@ -1,0 +1,111 @@
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname R-Edge
+!
+!
+!
+enable secret 5 $1$mERr$/HBfAgFP6vcLvCkNba7pn/
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+username ray password 7 08334D57
+!
+!
+license udi pid CISCO2901/K9 sn FTX15245LNS-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip domain-name ray.com
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface Tunnel1
+ ip address 192.168.12.1 255.255.255.252
+ mtu 1476
+ tunnel source GigabitEthernet0/0/0
+ tunnel destination 218.12.11.2
+!
+!
+interface GigabitEthernet0/0
+ ip address 10.0.100.1 255.255.255.252
+ ip nat inside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface GigabitEthernet0/0/0
+ ip address 218.12.10.1 255.255.255.252
+ ip nat outside
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router rip
+ version 2
+ network 10.0.0.0
+ default-information originate
+ no auto-summary
+!
+ip nat inside source list 1 interface GigabitEthernet0/0/0 overload
+ip nat inside source static tcp 10.3.100.4 80 218.12.10.1 80 
+ip nat inside source static udp 10.3.100.6 69 218.12.10.1 69 
+ip nat inside source static tcp 10.0.100.2 22 218.12.10.1 22 
+ip classless
+ip route 0.0.0.0 0.0.0.0 218.12.10.2 
+ip route 10.8.0.0 255.255.248.0 192.168.12.2 
+!
+ip flow-export version 9
+!
+!
+access-list 1 permit 10.0.0.0 0.3.255.255
+!
+!
+!
+!
+!
+line con 0
+!
+line aux 0
+!
+line vty 0 2
+ login local
+ transport input ssh
+line vty 3 4
+ login
+!
+!
+!
+end
+
