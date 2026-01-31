@@ -82,7 +82,7 @@ Approximate round trip times in milli-seconds:
     Minimum = 0ms, Maximum = 0ms, Average = 0ms
 ```
 
-d. PC32 `ping` PC52：
+e. PC32 `ping` PC52：
 
 ```shell
 C:\>ping 10.8.5.2
@@ -261,3 +261,4 @@ Writing startup-config...!!
 
 2571 bytes copied in 0 secs
 ```
+
