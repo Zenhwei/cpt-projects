@@ -1,0 +1,109 @@
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname WJ-R
+!
+!
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+!
+!
+!
+!
+!
+ip ftp username ray
+ip ftp password ray
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface Tunnel0
+ ip address 10.10.10.2 255.255.255.252
+ mtu 1476
+ tunnel source GigabitEthernet0/0/0
+ tunnel destination 218.12.17.1
+!
+!
+interface GigabitEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/0.4
+ encapsulation dot1Q 4
+ ip address 10.8.4.254 255.255.255.0
+ ip nat inside
+!
+interface GigabitEthernet0/0.5
+ encapsulation dot1Q 5
+ ip address 10.8.5.254 255.255.255.0
+ ip helper-address 10.8.7.253
+ ip nat inside
+!
+interface GigabitEthernet0/0.6
+ encapsulation dot1Q 6
+ ip address 10.8.6.254 255.255.255.0
+ ip helper-address 10.8.7.253
+ ip nat inside
+!
+interface GigabitEthernet0/0.7
+ encapsulation dot1Q 7
+ ip address 10.8.7.254 255.255.255.0
+ ip nat inside
+!
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface GigabitEthernet0/0/0
+ ip address 218.12.18.1 255.255.255.252
+ ip nat outside
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip nat inside source list 88 interface GigabitEthernet0/0/0 overload
+ip classless
+ip route 10.0.0.0 255.248.0.0 10.10.10.1 
+ip route 0.0.0.0 0.0.0.0 218.12.18.2 
+!
+ip flow-export version 9
+!
+!
+access-list 88 permit 10.8.0.0 0.0.255.255
+!
+!
+!
+!
+!
+line con 0
+!
+line aux 0
+!
+line vty 0 4
+ login
+!
+!
+!
+end
+

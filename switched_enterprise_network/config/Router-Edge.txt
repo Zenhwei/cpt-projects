@@ -1,0 +1,145 @@
+!
+version 15.4
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname Router-Edge
+!
+!
+!
+enable secret 5 $1$mERr$/HBfAgFP6vcLvCkNba7pn/
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+username ISP-1 password 0 ray
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip ftp username ray
+ip ftp password ray
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 10.3.3.3 255.255.255.255
+!
+interface Tunnel0
+ ip address 10.10.10.1 255.255.255.252
+ mtu 1476
+ tunnel source Serial0/2/0
+ tunnel destination 218.12.18.1
+!
+!
+interface GigabitEthernet0/0/0
+ ip address 10.0.13.3 255.255.255.0
+ ip nat inside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/0/1
+ ip address 10.0.23.3 255.255.255.0
+ ip nat inside
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1/0
+ switchport access vlan 100
+ switchport mode access
+!
+interface GigabitEthernet0/1/1
+ switchport access vlan 100
+ switchport mode access
+!
+interface GigabitEthernet0/1/2
+ switchport access vlan 200
+ switchport mode access
+!
+interface GigabitEthernet0/1/3
+ switchport access vlan 200
+ switchport mode access
+!
+interface Serial0/2/0
+ ip address 218.12.17.1 255.255.255.252
+ encapsulation ppp
+ ppp authentication chap
+ ip nat outside
+ clock rate 128000
+!
+interface Serial0/2/1
+ no ip address
+ clock rate 2000000
+!
+interface Vlan1
+ no ip address
+!
+interface Vlan100
+ mac-address 0001.6472.d301
+ ip address 10.5.100.254 255.255.255.0
+ ip nat inside
+!
+interface Vlan200
+ mac-address 0001.6472.d302
+ ip address 10.6.200.254 255.255.255.0
+ ip nat inside
+!
+ip nat inside source list NAT-RAY interface Serial0/2/0 overload
+ip nat inside source static tcp 10.5.100.253 80 218.12.17.1 80 
+ip classless
+ip route 10.0.0.0 255.248.0.0 10.0.13.1 
+ip route 10.0.0.0 255.248.0.0 10.0.23.2 
+ip route 0.0.0.0 0.0.0.0 Serial0/2/0 
+ip route 10.8.4.0 255.255.255.0 10.10.10.2 
+ip route 10.8.5.0 255.255.255.0 10.10.10.2 
+ip route 10.8.6.0 255.255.255.0 10.10.10.2 
+ip route 10.8.7.0 255.255.255.0 10.10.10.2 
+!
+ip flow-export version 9
+!
+!
+ip access-list standard NAT-RAY
+ permit 10.0.0.0 0.7.255.255
+ip access-list extended DENY-FTP
+ deny ip 10.1.10.0 0.0.0.255 host 10.6.200.252
+ deny ip 10.2.20.0 0.0.0.255 host 10.6.200.252
+ permit ip any any
+!
+!
+!
+!
+!
+line con 0
+!
+line aux 0
+!
+line vty 0 2
+ login local
+ transport input telnet
+line vty 3 4
+ login
+!
+!
+!
+end
+
